@@ -1,0 +1,66 @@
+		;matrix	dcd		1, 2, 3, 4, 5, 6, 7, 8, 9
+		;ldr		r1,  =matrix
+		;ldr		r2,  [r1, #0x10]
+		
+		
+M1		DCD		4, 2, 3, 7, 8, 4, 3, 1, 2 ; matriz 3x3
+		ldr		r1, =M1
+		
+M2		DCD		7, 3, 9, 2, 1, 4, 5, 6, 7 ; matriz 3x3
+		ldr		r2, =M2
+		
+M3		DCD		0, 0, 0, 0, 0, 0, 0, 0, 0
+		ldr		r3, =M3
+		
+		mov		r4, #0 ; i
+		mov		r5, #0 ; j
+		mov		r6, #0 ; k
+		
+		
+		
+		;------------------------main------------------------------;
+		;---------------for1=for(i=0;	i< 3; i++)-------------------;
+for1
+		cmp		r4, #3 ;i
+		bge		done1
+		;---------------for2=for(j=0;	j< 3; j++)-------------------;
+for2
+		cmp		r5, #3 ; j
+		bge		done2
+		
+		;----------------------(n*i)=3*	r4-------------------------;
+		
+		mov		r6, #0 ; t contador t=0
+		mov		r7, #0 ; result (n*i)= linha
+for3
+		cmp		r6, #3
+		bge		done3
+		add		r7, r7, r4
+		add		r6, r6, #1
+		b		for3
+done3
+		
+		;----------------------(n*i)+j-------------------------;
+		add		r8, r7, r5 ; coluna
+		ldr		r9,  [r1, r7, lsl #2]
+		ldr		r10, [r2, r8, lsl #2] ; carrega o valor do m2
+		
+		;---o multiplica um numero de m1 e um numero de m2[j]--;
+		
+		mov		r6, #0 ; t contador t=0
+		mov		r11, #0 ; result do r9, r10
+for4
+		cmp		r6, r10
+		bge		done4
+		add		r11, r11, r9
+		add		r6, r6, #1
+		b		for4
+done4
+		;------------------------------------------------------;
+		str		r11, [r3, r7] ; coloca o valor mult no m3
+		add		r5, r5, #1
+		b		for2
+done2
+		add		r4, r4, #1
+		
+done1

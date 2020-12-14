@@ -1,0 +1,113 @@
+		;matrix	dcd		1, 2, 3, 4, 5, 6, 7, 8, 9
+		;ldr		r1,  =matrix
+		;ldr		r2,  [r1, #0x10]
+		
+		
+M1		DCD		4, 2, 3, 7 ; matriz 2x2
+		ldr		r1, =M1
+		
+M2		DCD		7, 3, 9, 2 ; matriz 3x3
+		ldr		r2, =M2
+		
+M3		DCD		0, 0, 0, 0
+		ldr		r3, =M3
+		
+		mov		r4, #0 ; i
+		mov		r5, #0 ; j
+		mov		r6, #0 ; k
+		
+		;------------------------main------------------------------;
+		;---------------for1=for(i=0;	i< 3; i++)-------------------;
+for1
+		cmp		r4, #2 ;i
+		bge		done1
+		
+		;---------------for2=for(j=0;	j< 3; j++)-------------------;
+		mov		r5, #0
+for2
+		cmp		r5, #2 ; j
+		bge		done2
+		
+		mov		r11, #0
+for3
+		cmp		r11, #2
+		bge		done3
+		
+		;-----------------Pegando	o valor de M1--------------------;
+		
+		
+		mov		r6, #0 ; t contador t=0
+		mov		r7, #0 ; resultado
+for4
+		cmp		r6, #2 ; n linhas
+		bge		done4
+		add		r7, r7, r4 ; i
+		add		r6, r6, #1
+		b		for4
+done4
+		add		r7, r7, r11 ; k pegando o valor de m1
+		ldr		r9,  [r1, r7, lsl #2] ; pegar o valor de m1
+		
+		;----------------Pegando	o valor de M2---------------------;
+		
+		
+		mov		r6, #0 ; t contador t=0
+		mov		r7, #0 ; resultado
+		
+for5
+		cmp		r6, #2 ;
+		bge		done5
+		add		r7, r7, r11 ; k
+		add		r6, r6, #1
+		b		for5
+done5
+		
+		add		r7, r7, r5 ; j pegando o valor de m2
+		
+		ldr		r10, [r2, r7, lsl #2] ; carrega o valor do m2 ok
+		
+		;--------------------Multiplicando--------------------------;
+		;------multiplica	um numero de m1 e um numero de m2[j]----;
+		mov		r6, #0 ;  t=0
+		mov		r7, #0 ; resultado
+for6
+		cmp		r6, r9
+		bge		done6
+		add		r7, r7, r10
+		add		r6, r6, #1
+		b		for6
+done6
+		
+		;------------------Colocando	o valor na M3-------------------;
+		
+		mov		r6, #0 ; t contador t=0
+		
+for7
+		cmp		r6, #2 ; r10 e multiplicador
+		bge		done7
+		add		r12, r12, r4 ; i
+		add		r6, r6, #1
+		b		for7
+done7
+		add		r12, r12, r5 ; j pegando o valor de m3
+		
+		
+		ldr		r8, [r3, r12, lsl #2] ; pega o valor do m3
+		add		r7, r7, r8
+		str		r7, [r3, r12, lsl #2] ; coloca o valor mult no m3
+		
+		;
+		add		r11, r11,#1
+		b		for3
+done3
+		
+		
+		
+		add		r5, r5, #1
+		b		for2
+done2
+		
+		add		r4, r4, #1
+		b		for1
+		
+done1
